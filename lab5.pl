@@ -1,230 +1,290 @@
-sub_posl([],_):-!.
-sub_posl(_,[]):-fail,!.
-sub_posl([H|Sub_list],[H|List]):-sub_posl(Sub_list,List),!.
-sub_posl(Sub_list,[_|List]):-sub_posl(Sub_list,List).
+writeList([]):- writeln(''), !.
+writeList([Head|Tail]):- write(Head), write(' '), writeList(Tail). 
 
-sub_set([],[]).
-sub_set([H|Sub_set],[H|Set]):-sub_set(Sub_set,Set).
-sub_set(Sub_set,[H|Set]):-sub_set(Sub_set,Set).
-
-in_list([El|_],El).
-in_list([_|T],El):-in_list(T,El).
-
-
-sprava_next(A,B,[C]):-fail.
-sprava_next(A,B,[A|[B|Tail]]).
-sprava_next(A,B,[_|List]):-sprava_next(A,B,List).
-
-sleva_next(A,B,[C]):-fail.
-sleva_next(A,B,[B|[A|Tail]]).
-sleva_next(A,B,[_|List]):-sleva_next(A,B,List).
-
-%est li sosed
-next_to(A,B,List):-sprava_next(A,B,List).
-next_to(A,B,List):-sleva_next(A,B,List).
-
-el_no(List,Num,El):-el_no(List,Num,1,El).
-el_no([H|_],Num,Num,H):-!.
-el_no([_|Tail],Num,Ind,El):-Ind1 is Ind+1,el_no(Tail,Num,Ind1,El).
-
-pr_ein:- Houses=[_,_,_,_,_],
-
-		in_list(Houses,[red,english,_,_,_]),
-		in_list(Houses,[_,spanish,_,dog,_]),
-		in_list(Houses,[green,_,coffee,_,_]),
-		in_list(Houses,[_,ukrain,tea,_,_]),
-		sprava_next([green,_,_,_,_],[white,_,_,_,_],Houses),
-		in_list(Houses,[_,_,_,ulitka,old_gold]),
-		in_list(Houses,[yellow,_,_,_,kool]),
-		el_no(Houses,3,[_,_,milk,_,_]),
-		el_no(Houses,1,[_,norway,_,_,_]),
-		next_to([_,_,_,_,chester],[_,_,_,fox,_],Houses),
-		next_to([_,_,_,_,kool],[_,_,_,horse,_],Houses),
-		in_list(Houses,[_,_,orange,_,lucky]),
-		in_list(Houses,[_,japan,_,_,parlament]),
-		next_to([_,norway,_,_,_],[blue,_,_,_,_],Houses),
+/* 11
+Дан целочисленный массив. Найти среднее арифметическое моду-
+лей его элементов.
+*/
+abs1(X, AbsX):-
+    X >= 0, AbsX is X,!;
+    X < 0, AbsX is -X,!.
 
 
-		in_list(Houses,[_,WHO1,water,_,_]),
-		in_list(Houses,[_,WHO2,_,zebra,_]),
-		write(Houses), nl,
-		write(WHO1), write(" drinks water"), nl,
-    		write(WHO2), write(" has zebra"), nl.
-
-pr_ein2:- Hair=[_,_,_],  	
-    	               
-        in_list(Hair,[belokurov,_]),
-    	in_list(Hair,[chernov,_]),
-    	in_list(Hair,[rizhov,_]),
-                
-        in_list(Hair,[_,blond]),
-    	in_list(Hair,[_,brunet]),
-    	in_list(Hair,[_,red]),     
-    	
-    	not(in_list(Hair,[chernov,brunet])),
-    	not(in_list(Hair,[rizhov,red])),
-    	not(in_list(Hair,[belokurov,brunet])),
-    	not(in_list(Hair,[belokurov,blond])),
-
-        write(Hair).
-
-%name, dress, shoes
-pr_ein3:- Friends=[_,_,_],
+sumOfAbs([], Res):- Res is 0,!.
+sumOfAbs(List, Res):- sumOfAbs(List, 0, 0, Res),!.
+sumOfAbs([], Count, Sum, Res):- Res is Sum / Count.
+sumOfAbs([Head|Tail], Count, Sum, Res):-
+    NextCount is Count + 1,
+    abs(Head, AbsHead),
+    NextSum is Sum + AbsHead,
+    sumOfAbs(Tail, NextCount, NextSum, Res).
     
-    	in_list(Friends,[anya,_,_]),
-    	in_list(Friends,[natasha,_,_]),
-	in_list(Friends,[valya,_,_]),
-    
-    	in_list(Friends,[_,white,_]),
-    	in_list(Friends,[_,green,_]),
-    	in_list(Friends,[_,blue,_]),
-    
-    	in_list(Friends,[_,_,white]),
-    	in_list(Friends,[_,_,green]),
-    	in_list(Friends,[_,_,blue]),
-	    
-    	in_list(Friends,[natasha,_,green]),
-    	
-    	(in_list(Friends,[anya,green,green]);
-		in_list(Friends,[anya,white,white]);
-        in_list(Friends,[anya,blue,blue])),
-    	       
-    	not(in_list(Friends,[valya,white,_])),
-		not(in_list(Friends,[valya,_,white])),
-		not(in_list(Friends,[valya,white,white])),
+/*12
+Для введенного списка положительных чисел построить список всех по-
+ложительных простых делителей элементов списка без повторений.
+*/
 
-	not(in_list(Friends,[valya,green,green])),
-		not(in_list(Friends,[valya,white,white])),
-        not(in_list(Friends,[valya,blue,blue])),
-    	
-    	not(in_list(Friends,[natasha,green,green])),
-		not(in_list(Friends,[natasha,white,white])),
-        not(in_list(Friends,[natasha,blue,blue])),
-    	
-    	write(Friends).
+divCount(N, Count):- divCount(N, 0, Count).
+divCount(N, N, 0):-!.
+divCount(N, Div, Count):-
+	NextDiv is Div + 1,
+	0 is N mod NextDiv, 	 
+	divCount(N, NextDiv, NextCount),
+	Count is NextCount + 1,!;	
+	NextDiv is Div + 1,
+	0 =\= N mod NextDiv,	 
+	divCount(N, NextDiv, NextCount),
+	Count is NextCount,!.
 
-%name, post, age, relatives
-pr_ein4:- Zavod = [_,_,_],
-    	
-    	in_list(Zavod,[_,slesar,younger,no]),
-    	in_list(Zavod,[borisov,_,_,yes]),
-    
-    	in_list(Zavod,[ivanov,_,_,_]),
-    	in_list(Zavod,[semenov,_,_,_]),
-    
-  		in_list(Zavod,[_,tokar,_,_]),
-   		in_list(Zavod,[_,svarshik,_,_]),
-    		
-    	in_list(Zavod,[_,_,older,_]),
-   		in_list(Zavod,[_,_,middle-aged,_]),
-    
-    	in_list(Zavod,[_,_,_,not-stated]),
-    	   
-    	not(in_list(Zavod,[_,tokar,older,_])),
-    	not(in_list(Zavod,[semenov,tokar,_,_])),
-    	not(in_list(Zavod,[semenov,_,younger,_])),
-    	  	   	
-    	write(Zavod).
+isPrime(N):- divCount(N, Count), Count is 2,!.
 
-%name, drink, position
-pr_ein5:- Liquids = [_,_,_,_],
-    	
-    	in_list(Liquids,[bottle,_]),
-    	in_list(Liquids,[glass,_]),
-    	in_list(Liquids,[jug,_]),
-    	in_list(Liquids,[can,_]),
-    
-    	in_list(Liquids,[_,milk]),
-    	in_list(Liquids,[_,lemonade]),
-    	in_list(Liquids,[_,kvas]),
-    	in_list(Liquids,[_,water]),
-    	    
-		not(in_list(Liquids,[bottle,milk])),
-    	not(in_list(Liquids,[bottle,water])),
-    
-    	not(in_list(Liquids,[jug,lemonade])),
-    	not(in_list(Liquids,[jug,kvas])),
-    	
-    	not(in_list(Liquids,[can,lemonade])),
-    	not(in_list(Liquids,[can,water])),
-    
-    	not(in_list(Liquids,[glass,milk])),
-    	not(in_list(Liquids,[can,milk])),
-    	
-    	write(Liquids).
+member([H|_], H).
+member([_|T], H):- member(T, H),!. 
 
-%name, profession
-pr_ein6:- Talents = [_,_,_,_],
-    	
-    	
-    	in_list(Talents,[pavlov,_]),
-    	in_list(Talents,[levickiy,_]),
-   		in_list(Talents,[voronov,_]),
-    	in_list(Talents,[saharov,_]),
-    
-    	
-    	in_list(Talents,[_,writer]),
-    	in_list(Talents,[_,dancer]),
-    	in_list(Talents,[_,artist]),
-    	in_list(Talents,[_,singer]),
-    
-    	not(in_list(Talents,[voronov,singer])),
-        not(in_list(Talents,[levickiy,singer])),
-            
-        not(in_list(Talents,[pavlov,writer])),
-        not(in_list(Talents,[pavlov,artist])),
-            
-        not(in_list(Talents,[saharov,writer])),
-        not(in_list(Talents,[voronov,writer])),
-    
-   		not(in_list(Talents,[voronov,artist])),
-    	    	   	
-    	write(Talents).
+listOfPrimeDivs(N, Divs):- listOfPrimeDivs(N, 1, [], Divs),!.
+listOfPrimeDivs(N, N1, Divs, Divs):- N1 is N + 1,!.
+listOfPrimeDivs(N, Div, Buffer, Divs):-	
+	NextDiv is Div + 1,
+	0 is N mod Div, isPrime(Div),	
+	listOfPrimeDivs(N, NextDiv, [Div|Buffer], Divs),!;
+	NextDiv is Div + 1,
+	listOfPrimeDivs(N, NextDiv, Buffer, Divs),!.
 
-%name, nationality, sport
-pr_ein7:- Competition = [_,_,_],
-    	
-    	in_list(Competition,[simon,israel,_]),	
-    	in_list(Competition,[michael,_,basketball]),  	
-    	
-    	in_list(Competition,[richard,_,_]),
-    	
-    	in_list(Competition,[_,amerika,_]),
-    	in_list(Competition,[_,australia,_]),
-    
-    	in_list(Competition,[_,_,tennis]),
-    	in_list(Competition,[_,_,cricket]),
-    	
-    
-    	not(in_list(Competition,[michael,amerika,_])),
-    	not(in_list(Competition,[simon,_,tennis])),
-        
-    	in_list(Competition,[WHO1,australia,_]),
-		in_list(Competition,[richard,_,WHO2]),
-		write(Competition), nl,
-		write(WHO1), write(" is from Australia"), nl,
-    		write(WHO2), write(" is Richard's sport"), nl.
+listOfAllPrimeDivs(List, Divs):- listOfAllPrimeDivs(List, [], Divs),!.
+listOfAllPrimeDivs([], Divs, Divs):-!.
+listOfAllPrimeDivs([Head|Tail], Buffer, Divs):-
+	listOfPrimeDivs(Head, Primes),
+	append(Buffer, Primes, NextBuffer),
+	listOfAllPrimeDivs(Tail, NextBuffer, Divs).
+
+listOfDistinctPrimes(List, Distincts):- 
+	listOfAllPrimeDivs(List, PrimeDivs),
+	write(PrimeDivs), nl,
+	listOfDistinctPrimes(PrimeDivs, [], Distincts),!.
+	
+listOfDistinctPrimes([], Distincts, Distincts):- write("check"   | Distincts), nl,!.
+listOfDistinctPrimes([Head|Tail], Buffer, Distincts):-
+	member(Buffer, Head),
+	listOfDistinctPrimes(Tail, Buffer, Distincts);
+	appendList(Buffer, [Head], NextBuffer),	
+	listOfDistinctPrimes(Tail, NextBuffer, Distincts).
+
+/* 13
+Для введенного списка построить новый с элементами, большими, чем
+среднее арифметическое списка, но меньшими, чем его максимальное значе-
+ние.
+*/
+
+buildList(List, NewList):- 
+	max(List, Max),
+	averageOfAbs(List, Average),
+	buildList(List, [], Max, Average, NewList),!.
+
+buildList([], NewList, _, _, NewList).
+buildList([Head|Tail], Buffer, Max, Average, NewList):-
+	Head < Max, Head > Average,
+	appendList(Buffer, [Head], NextBuffer),
+	buildList(Tail, NextBuffer, Max, Average, NewList);
+	buildList(Tail, Buffer, Max, Average, NewList).
+
+/* 14 
+Беседует трое друзей: Белокуров, Рыжов, Чернов. Брюнет
+сказал Белокурову: “Любопытно, что один из нас блондин, другой брюнет,
+третий - рыжий, но ни у кого цвет волос не соответствует фамилии”. Какой
+цвет волос у каждого из друзей?
+*/
+
+task14:- 
+	HairColors=[_,_,_],
+	member(HairColors,[belokurov,_]),
+	member(HairColors,[chernov,_]),
+	member(HairColors,[rizhov,_]),
+	member(HairColors,[_,ginger]),
+	member(HairColors,[_,blond]),
+	member(HairColors,[_,brunette]),
+	\+(member(HairColors,[belokurov,blond])),
+	\+(member(HairColors,[chernov,brunette])),
+	\+(member(HairColors,[rizhov,ginger])),
+	write(HairColors),!.
+	
+/* 15
+Три подруги вышли в белом, зеленом и синем платьях и туфлях. 
+Известно, что только у Ани цвета платья и туфлей совпадали. Ни туфли,ни платье Вали не были белыми. 
+Наташа была в зеленых туфлях. Определить цвета платья и туфель на каждой из подруг.
+*/
+
+task15:- 
+	Women=[_,_,_],
+	member(Women,[ann,X,X]),
+	member(Women,[valya,_,_]),
+	member(Women,[natasha,_,_]),
+	member(Women,[_,white,_]),
+	member(Women,[_,green,_]),
+	member(Women,[_,blue,_]),
+	member(Women,[_,_,white]),
+	member(Women,[_,_,green]),
+	member(Women,[_,_,blue]),
+	\+member(Women,[valya,white,_]),
+	\+member(Women,[valya,_,white]),
+	\+member(Women,[natasha,Y,Y]),
+	write(Women),!.
+	
+/* 16
+На заводе работали три друга: слесарь, токарь и сварщик. Их фамилии Борисов, Иванов и Семенов. У слесаря нет ни братьев, ни сестер. 
+Он самый младший из друзей. Семенов, женатый на сестре Борисова, старше токаря. Назвать фамилии слесаря, токаря и сварщика.
+*/
+
+task16:- 
+	Workers = [_,_,_],
+	/*member(Workers,[slesar,borisov,brothers_count,age,is_relative])*/
+	member(Workers,[slesar,_,0,0,_]),
+	member(Workers,[tokar,_,_,1,_]),
+	member(Workers,[svarshick,_,_,_,_]),
+	member(Workers,[_,semenov,_,2,borisov]),
+	member(Workers,[_,ivanov,_,_,_]),
+	member(Workers,[_,borisov,1,_,_]),
+	member(Workers,[slesar,Who1,_,_,_]),
+	member(Workers,[tokar,Who2,_,_,_]),
+	member(Workers,[svarshick,Who3,_,_,_]),
+	write('slesar - '),write(Who1),nl,
+	write('tokar - '),write(Who2),nl,
+	write('svarshick - '),write(Who3),!.
 
 
-%name, truth/lie, 1/0 (flowers)
-%vova & andrey tell truth
-pr_ein8:- Students = [_,_,_,_],
-       	    
-    	in_list(Students,[petr,_,_]),
-    	in_list(Students,[vova,_,_]),
-		in_list(Students,[roma,_,_]),
-		in_list(Students,[andrey,_,_]),
-    	
-    
-    	in_list(Students,[_,truth,0]),
-    	in_list(Students,[_,truth,0]),
-    	in_list(Students,[_,lie,1]),
-    	in_list(Students,[_,lie,0]),
-           	    	
-    	not(in_list(Students,[andrey,lie,_])),
-    	not(in_list(Students,[roma,truth,_])),
-    	not(in_list(Students,[petr,truth,_])),
-    	not(in_list(Students,[vova,lie,_])),
-    	not(in_list(Students,[roma,_,1])),
-    
-		write(Students).
+/* 17
+В бутылке, стакане, кувшине и банке находятся молоко, лимонад, квас и вода. Известно, что вода и молоко не в бутылке, 
+сосуд с лимонадом находится между кувшином и сосудом с квасом, в банке - не лимонад и не вода. 
+Стакан находится около банки и сосуда с молоком. Как распределены эти жидкости по сосудам.
+*/
+
+right(_,_,[_]):-fail.
+right(Item,RightItem,[Item|[RightItem|_]]).
+right(Item,RightItem,[_|Tail]):-right(Item,RightItem,Tail).
+
+left(_,_,[_]):-fail.
+left(Item,LeftItem,[LeftItem|[Item|_]]).
+left(Item,LeftItem,[_|Tail]):-left(Item,LeftItem,Tail).
+
+isNextTo(A,B,List):-right(A,B,List).
+isNextTo(A,B,List):-left(A,B,List).
+
+task17:- 
+    Liquid=[_,_,_,_],
+    member(Liquid,[bottle,_]),
+    member(Liquid,[glass,_]),
+    member(Liquid,[pitcher,_]),
+    member(Liquid,[jar,_]),
+    member(Liquid,[_,milk]),
+    member(Liquid,[_,lemonade]),
+    member(Liquid,[_,kvas]),
+    member(Liquid,[_,water]),
+    \+(member(Liquid,[bottle,milk])),
+    \+(member(Liquid,[bottle,water])),
+    \+(member(Liquid,[jar,lemonade])),
+    \+(member(Liquid,[jar,water])),
+    right([pitcher,_],[_,lemonade],Liquid),
+    right([_,lemonade],[_,kvas],Liquid),
+    isNextTo([glass,_],[jar,_],Liquid),
+    isNextTo([glass,_],[_,milk],Liquid),
+    write(Liquid),!.
+
+/* 18
+Воронов, Павлов, Левицкий и Сахаров – четыре талантли-
+вых молодых человека. Один из них танцор, другой художник, третий-певец,
+а четвертый-писатель. О них известно следующее: Воронов и Левицкий си-
+дели в зале консерватории в тот вечер, когда певец дебютировал в сольном
+концерте. Павлов и писатель вместе позировали художнику. Писатель написал
+биографическую повесть о Сахарове и собирается написать о Воронове. Воро-
+нов никогда не слышал о Левицком. Кто чем занимается?*/
+
+task18:- 
+	Men=[_,_,_,_],
+	member(Men,[pavlov,_]),
+	member(Men,[levicki,_]),
+	member(Men,[saharov,_]),
+	member(Men,[voronov,_]),
+	member(Men,[_,dancer]),
+	member(Men,[_,artist]),
+	member(Men,[_,singer]),
+	member(Men,[_,writer]),
+	\+(member(Men,[saharov,writer])),
+	\+(member(Men,[voronov,writer])),
+	\+(member(Men,[voronov,singer])),
+	\+(member(Men,[levicki,singer])),
+	\+(member(Men,[pavlov,writer])),
+	\+(member(Men,[pavlov,artist])),
+	\+(member(Men,[voronov,artist])),
+	write(Men),!.
+
+/* 19
+Три друга заняли первое, второе, третье места в соревнова-
+ниях универсиады. Друзья разной национальности, зовут их по-разному, и лю-
+бят они разные виды спорта. Майкл предпочитает баскетбол и играет лучше,
+чем американец. Израильтянин Саймон играет лучше теннисиста. Игрок в кри-
+кет занял первое место. Кто является австралийцем? Каким спортом увлека-
+ется Ричард?*/
+
+/*
+майкл австралиец баскетболист
+саймон израильтянин крикетист
+ричард американец теннисист
+*/
+
+task19:- 
+	Athletas = [_,_,_],
+	member(Athletas,[michael,_,basketball,_]),
+	member(Athletas,[saimon,israel,_,_]),
+	member(Athletas,[_,_,cricket,first]),
+	member(Athletas,[richard,_,_,_]),
+	member(Athletas,[_,_,tennis,_]),
+	member(Athletas,[_,american,_,_]),
+	member(Athletas,[_,australian,_,_]),
+	member(Athletas,[_,_,_,second]),
+	member(Athletas,[_,_,_,third]),
+	\+(member(Athletas,[michael,american,_,_])),
+	\+(member(Athletas,[saimon,_,tennis,_])),
+	member(Athletas,[Who1,australian,_,_]),
+	member(Athletas,[richard,_,Who2,_]),
+	write('Australian - '), write(Who1), nl,
+	write('Richard plays - '), write(Who2),!.
+
+/* 20
+Четыре человека играют в домино. Их фамилии Кузнецов, Токарев, Слесарев и Резчиков. 
+Профессия каждого игрока соответствует фамилии одного из других игроков. 
+Напротив Кузнецова сидит слесарь. Напротив Резчикова сидит резчик. 
+Справа от Слесарева сидит токарь. Кто сидит слева от кузнеца?
+*/
+
+/*
+     Кузнецов  напротив  слесаря
+	 Резчиков  напротив  резчика
+	 Слесарев слева от токаря
+	 Токарев 
+	 
+	 |1 ||| 3|
+	 |2 ||| 4|
+*/
+
+
+task20:-
+	Players = [_,_,_,_],
+	member(Players, [kuznetsov,_]),
+	member(Players, [rezchikov,_]),
+	member(Players, [slesarev,_]),
+	member(Players, [tokarev,_]),
+	member(Players, [_,blacksmith]),
+	member(Players, [_,carver]),
+	member(Players, [_,locksmith]),
+	member(Players, [_,turner]),		
+	\+member(Players, [kuznetsov, blacksmith]),
+	\+member(Players, [rezchikov, carver]),
+	\+member(Players, [slesarev, locksmith]),
+	\+member(Players, [tokarev, turner]),
+	\+member(Players, [kuznetsov, locksmith]),
+	\+member(Players, [slesarev, turner]),
+	\+isNextTo([kuznetsov,_], [_,locksmith], Players),
+	\+isNextTo([rezchikov,_], [_,carver], Players),
+	left([_,turner], [slesarev,_], Players),
+	left([_,blacksmith], [Who,_], Players),
+	write(Players), nl,
+	write("Is sitting left to blacksmith - "), write(Who).
